@@ -22,18 +22,16 @@ ext {
 
 dependencies {
 
-    implementation("cglib:cglib:${cglibVersion}")
 
     implementation("org.slf4j:slf4j-api:${slf4jVersion}")
     implementation("org.slf4j:jcl-over-slf4j:${slf4jVersion}")
     implementation("ch.qos.logback:logback-classic:${logbackVersion}")
     implementation("io.netty:netty-all:${nettyVersion}")
-    implementation("com.alibaba:fastjson:${fastjsonVersion}")
 
 
     compile("cn.hutool:hutool-all:${hutoolVersion}")
     implementation group: 'org.springframework', name: 'spring-context', version: '5.2.5.RELEASE'
-    implementation group: 'io.netty', name: 'netty-all', version: '4.1.48.Final'
+
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
