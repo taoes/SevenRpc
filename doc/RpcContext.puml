@@ -1,0 +1,18 @@
+@startuml
+
+
+class RpcContext <<RPC的上下文>> {
+
+- Method[] methodList;
+- Map<String,Method> methodMap;
+
+
++ List<Method> getAllMethod();
++ List<Method> getServiceCount();
++ Method getMethodByName(String methodName);
+
+}
+
+
+
+@enduml
