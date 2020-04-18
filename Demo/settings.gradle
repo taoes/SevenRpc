@@ -1,0 +1,3 @@
+rootProject.name = 'demo'
+include ':Core'
+project(':Core').projectDir = new File(settingsDir, '../Core')
