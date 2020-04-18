@@ -14,6 +14,10 @@ repositories {
 
 dependencies {
     compile project(':Core')
+
+    // 注册中心实现方案
+    implementation group: 'com.101tec', name: 'zkclient', version: '0.11'
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
