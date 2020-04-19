@@ -10,6 +10,7 @@ import com.zhoutao123.rpc.entity.ResponseInfo;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,42 +35,30 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<RequestInfo> 
     // 查询方法信息
     MethodInfo methodInfo = rpcServiceContext.getMethodPool().get(requestInfo.getMethodName());
     if (methodInfo == null) {
-      writeErrorPage(context, new NullPointerException("方法不存在"));
+      writeErrorPage(context, "请求的方法不存在");
       return;
     }
 
+    Method method = methodInfo.getMethod();
+    Object instance = methodInfo.getInstance();
+
     // 处理请求参数
-    List<String> params = requestInfo.getParams();
-    List<Object> paramObjects = new ArrayList<>(params.size());
-    for (String param : params) {
-      Type validate = JSONValidator.from(param).getType();
-      if (validate == Type.Object) {
-        paramObjects.add(JSON.parse(param));
-      } else {
-        paramObjects.add(param);
-      }
+    Object[] objParams = handleParams(requestInfo);
+
+    // 判断参数信息
+    if (method.getParameterCount() != objParams.length) {
+      writeErrorPage(context, "参数长度不匹配");
+      return;
     }
 
     Object invokeResult = null;
     try {
-      invokeResult =
-          methodInfo.getMethod().invoke(methodInfo.getInstance(), paramObjects.toArray());
-    } catch (Exception e) {
-      writeErrorPage(context, e);
-      return;
-    }
-
-    if (invokeResult != null) {
-      String s = JSON.toJSONString(invokeResult);
+      invokeResult = method.invoke(instance, objParams);
       ResponseInfo ok = ResponseInfo.ok(methodInfo.getMethodName(), invokeResult);
       context.channel().writeAndFlush(ok);
+    } catch (Exception e) {
+      writeErrorPage(context, e);
     }
-  }
-
-  /** 写入错误信息 */
-  private void writeErrorPage(ChannelHandlerContext context, Exception e) {
-    ResponseInfo error = ResponseInfo.error("", e.getMessage());
-    context.channel().writeAndFlush(error);
   }
 
   // 发生异常时候关闭连接
@@ -77,5 +66,34 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<RequestInfo> 
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
     super.exceptionCaught(ctx, cause);
     ctx.close();
+  }
+
+  /** 写入错误信息 */
+  private void writeErrorPage(ChannelHandlerContext context, Exception e) {
+    writeErrorPage(context, e.getMessage());
+  }
+
+  /** 写入错误信息 */
+  private void writeErrorPage(ChannelHandlerContext context, String message) {
+    ResponseInfo error = ResponseInfo.error("", message);
+    context.channel().writeAndFlush(error);
+  }
+
+  private Object[] handleParams(RequestInfo requestInfo) {
+    List<String> params = requestInfo.getParams();
+    List<Object> paramObjects = new ArrayList<>(params.size());
+    for (String param : params) {
+      if (param == null || param.equals("null")) {
+        paramObjects.add(null);
+        continue;
+      }
+      Type validate = JSONValidator.from(param).getType();
+      if (validate == Type.Object) {
+        paramObjects.add(JSON.parse(param));
+      } else {
+        paramObjects.add(param);
+      }
+    }
+    return paramObjects.toArray();
   }
 }
