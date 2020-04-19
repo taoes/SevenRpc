@@ -28,6 +28,9 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:${logbackVersion}")
     implementation("io.netty:netty-all:${nettyVersion}")
 
+    // 注册中心实现方案
+    implementation group: 'com.101tec', name: 'zkclient', version: '0.11'
+
 
     compile("cn.hutool:hutool-all:${hutoolVersion}")
     implementation group: 'org.springframework', name: 'spring-context', version: '5.2.5.RELEASE'

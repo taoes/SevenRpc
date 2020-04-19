@@ -1,4 +1,4 @@
-package com.zhoutao123.rpc.demo.config;
+package com.zhoutao123.rpc.component.register;
 
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
@@ -7,9 +7,10 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LocalCacheRegister implements RpcRegistry {
+public class ZKRegister implements RpcRegistry {
 
   Log log = LogFactory.get();
+
 
   @Override
   public void sendHeard() {
