@@ -2,7 +2,7 @@ package com.zhoutao123.rpc.entity;
 
 import java.io.Serializable;
 
-/** 方法信息实体 */
+/** 节点信息实体 */
 public class NodeInfo implements Serializable {
 
   private final String ip;

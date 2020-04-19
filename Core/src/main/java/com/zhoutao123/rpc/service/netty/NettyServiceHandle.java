@@ -1,10 +1,11 @@
 package com.zhoutao123.rpc.service.netty;
 
+import com.zhoutao123.rpc.base.RpcServiceContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.http.HttpContentCompressor;
-import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 
 /**
  * Netty 服务channel定义
@@ -14,15 +15,25 @@ import io.netty.handler.codec.http.HttpServerCodec;
  */
 public class NettyServiceHandle extends ChannelInitializer<SocketChannel> {
 
+  private RpcServiceContext rpcServiceContext;
+
+  public NettyServiceHandle(RpcServiceContext rpcServiceContext) {
+    this.rpcServiceContext = rpcServiceContext;
+  }
+
   @Override
   protected void initChannel(SocketChannel socketChannel) throws Exception {
     ChannelPipeline pipeline = socketChannel.pipeline();
 
-    pipeline.addLast(new HttpServerCodec());
-    // 开启Gzip
-    pipeline.addLast(new HttpContentCompressor());
+    // 转换为字符串
+    pipeline.addLast(new StringDecoder());
+    pipeline.addLast(new StringEncoder());
 
-    // 处理RPC 请求
-    pipeline.addLast(new RpcRequestHandler());
+    // 转换为请求信息
+    pipeline.addLast(new ResponseDecode());
+    pipeline.addLast(new ResponseEncode());
+
+    // 业务逻辑处理
+    pipeline.addLast(new RpcRequestHandler(rpcServiceContext));
   }
 }

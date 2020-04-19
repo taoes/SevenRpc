@@ -2,6 +2,7 @@ package com.zhoutao123.rpc.component.context;
 
 import com.zhoutao123.rpc.base.RpcServiceContext;
 import com.zhoutao123.rpc.entity.MethodInfo;
+import com.zhoutao123.rpc.entity.NodeInfo;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Component;
 public class RpcServiceContextImpl implements RpcServiceContext {
 
   private Map<String, MethodInfo> methodPool;
+
+  protected Map<String, NodeInfo> nodeInfoMap;
 
   @Override
   public Map<String, MethodInfo> getMethodPool() {
@@ -33,8 +36,6 @@ public class RpcServiceContextImpl implements RpcServiceContext {
     if (methodPool == null) {
       methodPool = new HashMap<>(10);
     }
-    // 生成方法名
-    Class<?>[] parameterTypes = method.getParameterTypes();
 
     String name = method.toGenericString();
 

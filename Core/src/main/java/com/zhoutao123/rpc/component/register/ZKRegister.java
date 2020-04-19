@@ -42,11 +42,15 @@ public class ZKRegister implements RpcRegistry {
   public boolean register(Set<String> serviceNames) {
     String intranetIp = NetUtils.getIntranetIp();
     NodeInfo nodeInfo = new NodeInfo(intranetIp, rpcConfig.getPort());
+    if (!zkClient.exists(PREFIX)) {
+      zkClient.createEphemeral(PREFIX);
+    }
+
     serviceNames.forEach(
         serviceName -> {
           String path = PREFIX + "/" + serviceName;
-          zkClient.createPersistent(path, true);
-          zkClient.writeData(path, nodeInfo);
+          zkClient.delete(path);
+          zkClient.createEphemeral(path, nodeInfo);
         });
     return true;
   }
