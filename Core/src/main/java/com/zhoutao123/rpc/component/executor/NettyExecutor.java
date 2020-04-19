@@ -13,13 +13,23 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.springframework.stereotype.Component;
 
-/** InitFunction 执行器 */
+/**
+ * InitFunction 执行器
+ */
 @Component("nettyExecutor")
 public class NettyExecutor implements Executor {
 
-  Log log = LogFactory.get();
+  private RpcConfig rpcConfig;
 
-  /** 启动Netty服务 */
+  private static Log log = LogFactory.get();
+
+  public NettyExecutor(RpcConfig rpcConfig) {
+    this.rpcConfig = rpcConfig;
+  }
+
+  /**
+   * 启动Netty服务
+   */
   public void start() {
     EventLoopGroup boss = new NioEventLoopGroup();
     EventLoopGroup work = new NioEventLoopGroup();
@@ -30,8 +40,8 @@ public class NettyExecutor implements Executor {
           .group(boss, work)
           .channel(NioServerSocketChannel.class)
           .childHandler(new NettyServiceHandle());
-      ChannelFuture future = serverBootstrap.bind(RpcConfig.SERVICE_PORT).sync();
-      log.info("Netty服务启动在:{} 端口", RpcConfig.SERVICE_PORT);
+      ChannelFuture future = serverBootstrap.bind(rpcConfig.getPort()).sync();
+      log.info("Netty服务启动在:{} 端口", rpcConfig.getPort());
       future.channel().closeFuture().sync();
     } catch (Exception e) {
       log.info("初始化Netty服务发生异常.", e);

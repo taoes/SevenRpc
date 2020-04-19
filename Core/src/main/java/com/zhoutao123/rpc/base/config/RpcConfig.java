@@ -1,25 +1,46 @@
 package com.zhoutao123.rpc.base.config;
 
-import com.zhoutao123.rpc.utils.PropertiesUtils;
+import java.util.HashSet;
 import java.util.Set;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /** SevenRPC 服务配置信息 */
 @Configuration
+@ConfigurationProperties(prefix = "application.seven-rpc")
 public class RpcConfig {
 
-  private static final String PROPERTIES_PATH = "/rpc.properties";
+  private Integer port = 7077;
 
-  private static PropertiesUtils properties = PropertiesUtils.getInstance(PROPERTIES_PATH);
+  private String name = "";
 
-  public static Integer SERVICE_PORT = properties.getInteger("port", 7777);
+  private ZkConfig zk = new ZkConfig();
 
-  public static String APPLICATION_NAME = properties.getString("name");
+  public Integer getPort() {
+    return port;
+  }
 
-  public static final String BEAN_SCAN_PACKAGE = properties.getString("package");
+  public void setPort(Integer port) {
+    this.port = port;
+  }
 
-  // 自定义的扫描路径
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public ZkConfig getZk() {
+    return zk;
+  }
+
+  public void setZk(ZkConfig zk) {
+    this.zk = zk;
+  }
+
   public Set<String> getCustomPackage() {
-    return null;
+    return new HashSet<>(0);
   }
 }

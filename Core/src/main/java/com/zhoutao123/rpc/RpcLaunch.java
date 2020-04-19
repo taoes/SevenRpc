@@ -15,15 +15,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class RpcLaunch {
 
+
   private static Log log = LogFactory.get();
+
+  private RpcConfig rpcConfig;
 
   private List<Executor> executors;
 
   public RpcLaunch(
+      RpcConfig rpcConfig,
       RegistryExecutor registryExecutor,
       NettyExecutor nettyExecutor,
       InitExecutor initExecutor,
       ScanExecutor scanExecutor) {
+    this.rpcConfig = rpcConfig;
     executors = new ArrayList<>(4);
     // 初始化
     this.executors.add(initExecutor);
@@ -38,6 +43,6 @@ public class RpcLaunch {
   public void start() {
     log.info("SevenRpc is starting....");
     this.executors.forEach(Executor::start);
-    log.info("SevenRpc start at port: {}", RpcConfig.SERVICE_PORT);
+    log.info("SevenRpc start at port: {}", rpcConfig.getPort());
   }
 }

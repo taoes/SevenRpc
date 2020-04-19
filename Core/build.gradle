@@ -31,9 +31,12 @@ dependencies {
     // 注册中心实现方案
     implementation group: 'com.101tec', name: 'zkclient', version: '0.11'
 
+    implementation 'org.projectlombok:lombok:1.18.10'
+
+
 
     compile("cn.hutool:hutool-all:${hutoolVersion}")
-    implementation group: 'org.springframework', name: 'spring-context', version: '5.2.5.RELEASE'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.2.6.RELEASE'
 
 
     testCompile group: 'junit', name: 'junit', version: '4.12'

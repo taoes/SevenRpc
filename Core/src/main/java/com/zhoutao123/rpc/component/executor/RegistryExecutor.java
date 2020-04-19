@@ -26,7 +26,7 @@ public class RegistryExecutor implements Executor {
 
   /** 向注册中心注册服务 */
   public void start() {
-    Map<String, MethodInfo> methodPoll = rpcServiceContext.getMethodPool();
-    rpcRegistry.register(methodPoll.keySet());
+    Map<String, MethodInfo> methodPool = rpcServiceContext.getMethodPool();
+    rpcRegistry.register(methodPool.keySet());
   }
 }
