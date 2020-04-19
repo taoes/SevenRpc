@@ -16,7 +16,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConditionalOnBean(RpcConfig.class)
 public class ZKRegister implements RpcRegistry {
 
   private static final String PREFIX = "/seven-rpc";

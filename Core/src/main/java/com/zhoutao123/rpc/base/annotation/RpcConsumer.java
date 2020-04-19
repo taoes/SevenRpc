@@ -7,8 +7,8 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Order {
+public @interface RpcConsumer {
 
-  /** 服务优先级别 */
-  int value() default 0;
+  /** 服务提供者的别名，若此值为空，则使用类的名称 */
+  String alias() default "";
 }

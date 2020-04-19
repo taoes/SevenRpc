@@ -5,7 +5,6 @@ import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.zhoutao123.rpc.base.Executor;
 import com.zhoutao123.rpc.base.InitFunction;
-import com.zhoutao123.rpc.base.annotation.Order;
 import com.zhoutao123.rpc.base.config.RpcConfig;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -16,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /** InitFunction 执行器 */
