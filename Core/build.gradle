@@ -33,8 +33,12 @@ dependencies {
 
     // 注册中心实现方案
     implementation group: 'com.101tec', name: 'zkclient', version: '0.11'
-
     implementation 'org.projectlombok:lombok:1.18.10'
+
+
+    compile group: 'io.protostuff', name: 'protostuff-core', version: '1.7.2'
+    compile group: 'io.protostuff', name: 'protostuff-runtime', version: '1.7.2'
+    compile group: 'org.objenesis', name: 'objenesis', version: '3.0.1'
 
 
     compile("cn.hutool:hutool-all:${hutoolVersion}")

@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.I0Itec.zkclient.ZkClient;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -50,6 +49,7 @@ public class ZKRegister implements RpcRegistry {
           String path = PREFIX + "/" + serviceName;
           zkClient.delete(path);
           zkClient.createEphemeral(path, nodeInfo);
+          log.info("注册服务完成:{}", path);
         });
     return true;
   }

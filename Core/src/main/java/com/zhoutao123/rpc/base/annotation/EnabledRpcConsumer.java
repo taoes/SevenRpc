@@ -13,4 +13,7 @@ import org.springframework.context.annotation.Import;
 @Target(ElementType.TYPE)
 @Documented
 @Import(RpcConsumerRegister.class)
-public @interface EnabledRpcConsumer {}
+public @interface EnabledRpcConsumer {
+
+  String[] values() default {};
+}

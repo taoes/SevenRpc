@@ -5,7 +5,7 @@ import cn.hutool.log.LogFactory;
 import com.zhoutao123.rpc.base.Executor;
 import com.zhoutao123.rpc.base.RpcServiceContext;
 import com.zhoutao123.rpc.base.config.RpcConfig;
-import com.zhoutao123.rpc.service.netty.NettyServiceHandle;
+import com.zhoutao123.rpc.service.netty.service.RpcServiceInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -39,7 +39,7 @@ public class NettyExecutor implements Executor {
       serverBootstrap
           .group(boss, work)
           .channel(NioServerSocketChannel.class)
-          .childHandler(new NettyServiceHandle(rpcServiceContext));
+          .childHandler(new RpcServiceInitializer(rpcServiceContext));
       ChannelFuture future = serverBootstrap.bind(rpcConfig.getPort()).sync();
       log.info("Netty服务启动在:{} 端口", rpcConfig.getPort());
       future.channel().closeFuture().sync();

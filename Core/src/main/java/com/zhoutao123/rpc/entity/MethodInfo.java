@@ -23,7 +23,7 @@ public class MethodInfo {
     return instance;
   }
 
-  public String getMethodName(){
+  public String getMethodName() {
     return method.toGenericString();
   }
 }

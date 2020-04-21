@@ -31,16 +31,35 @@ public class ScanExecutor implements Executor {
   /** 开始扫描系统的服务，向注册中心注册服务 */
   public void start() {
     Map<String, Object> rpcServiceMap = applicationContext.getBeansWithAnnotation(RpcService.class);
+
     for (Entry<String, Object> entry : rpcServiceMap.entrySet()) {
       Object serviceBean = entry.getValue();
+      Class<?>[] interfaces = serviceBean.getClass().getInterfaces();
+
       Method[] allDeclaredMethods = ReflectionUtils.getAllDeclaredMethods(serviceBean.getClass());
       for (Method method : allDeclaredMethods) {
         RpcMethod rpcMethod = method.getAnnotation(RpcMethod.class);
         if (rpcMethod == null) {
           continue;
         }
-        rpcServiceContext.saveMethod(serviceBean, method);
+
+        Method superMethod = findInterfaceMethod(interfaces, method);
+        rpcServiceContext.saveMethod(serviceBean, superMethod);
       }
     }
+  }
+
+  private Method findInterfaceMethod(Class<?>[] clazzList, Method method) {
+    try {
+      for (Class<?> aClass : clazzList) {
+        Method method1 = aClass.getMethod(method.getName(), method.getParameterTypes());
+        if (method1 != null) {
+          return method1;
+        }
+      }
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+    return null;
   }
 }
