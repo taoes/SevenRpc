@@ -2,7 +2,9 @@ package com.zhoutao123.rpc.service.netty.client;
 
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
+import com.zhoutao123.rpc.entity.RpcRequest;
 import com.zhoutao123.rpc.entity.RpcResponse;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import java.util.concurrent.CountDownLatch;
@@ -15,8 +17,15 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<RpcResponse> {
 
   public RpcResponse response;
 
+  private Channel channel;
+
   public RpcClientHandler(CountDownLatch latch) {
     this.latch = latch;
+  }
+
+  @Override
+  public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+    this.channel = ctx.channel();
   }
 
   @Override
@@ -33,5 +42,9 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<RpcResponse> {
     this.response.setError(cause.getMessage());
     this.response.setResult(cause);
     latch.countDown();
+  }
+
+  public void send(RpcRequest request) {
+    channel.writeAndFlush(request);
   }
 }

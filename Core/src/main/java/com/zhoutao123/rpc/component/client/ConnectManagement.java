@@ -30,7 +30,6 @@ public class ConnectManagement {
   private EventLoopGroup eventLoopGroup = new NioEventLoopGroup(4);
 
   public static ConnectManagement getInstance() {
-
     if (management == null) {
       management = new ConnectManagement();
     }

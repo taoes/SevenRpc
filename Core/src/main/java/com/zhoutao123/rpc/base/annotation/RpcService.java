@@ -7,6 +7,7 @@ import java.lang.annotation.Target;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.stereotype.Service;
 
+/** 标记此服务转为RPC服务 */
 @Service
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

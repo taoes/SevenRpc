@@ -10,9 +10,11 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "application.seven-rpc")
 public class RpcConfig {
 
-  private Integer port = 7077;
-
   private String name = "";
+
+  private int port = 7077;
+
+  private int timeout = 5;
 
   private ZkConfig zk = new ZkConfig();
 

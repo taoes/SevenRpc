@@ -27,7 +27,6 @@ public class RpcConsumerRegister implements ImportBeanDefinitionRegistrar {
         if (aClass.getAnnotation(RpcConsumer.class) != null) {
           BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(aClass);
           GenericBeanDefinition definition = (GenericBeanDefinition) builder.getRawBeanDefinition();
-          String beanClassName = definition.getBeanClassName();
           definition.getPropertyValues().add("interfaceClass", definition.getBeanClassName());
           definition.setBeanClass(MyProxyFactory.class);
           definition.setAutowireMode(GenericBeanDefinition.AUTOWIRE_BY_TYPE);

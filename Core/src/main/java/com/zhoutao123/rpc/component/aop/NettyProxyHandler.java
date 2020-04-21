@@ -10,6 +10,7 @@ import com.zhoutao123.rpc.service.netty.client.RpcClientHandler;
 import com.zhoutao123.rpc.service.netty.client.RpcClientInitializer;
 import com.zhoutao123.rpc.utils.ClassUtils;
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -35,9 +36,11 @@ public class NettyProxyHandler implements InvocationHandler {
 
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+    // 如果是Object的方法直接返回空
     boolean contains = ClassUtils.allMethodNameOfClass(Object.class).contains(method.getName());
     if (contains) {
-      return null;
+      return method.invoke(method, args);
     }
 
     log.trace("进入代理方法:{}", method.getName());
@@ -55,16 +58,24 @@ public class NettyProxyHandler implements InvocationHandler {
             .connect(new InetSocketAddress("127.0.0.1", 8888))
             .sync();
 
-    RpcClientHandler clientHandler = sync.channel().pipeline().get(RpcClientHandler.class);
-    sync.channel().writeAndFlush(request).sync();
+    Channel channel = sync.channel();
+    RpcClientHandler clientHandler = channel.pipeline().get(RpcClientHandler.class);
 
-    boolean await = latch.await(5000, TimeUnit.MILLISECONDS);
+    clientHandler.send(request);
+
+    boolean await = latch.await(5, TimeUnit.SECONDS);
     if (!await) {
-      throw new RpcTimeoutException("请求RPC方法超时");
+      throw new RpcTimeoutException("请求 rpc 方法超时");
     }
 
-    sync.channel().close().sync();
+    channel.close().sync();
+
     RpcResponse response = clientHandler.response;
+
+    if (response == null) {
+      throw new RpcBizException("请求失败");
+    }
+
     if (response.getError() != null) {
       throw new RpcBizException(response.getError());
     }
