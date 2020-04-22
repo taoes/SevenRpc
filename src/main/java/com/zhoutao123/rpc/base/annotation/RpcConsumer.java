@@ -10,6 +10,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RpcConsumer {
 
-  /** 服务提供者的别名，若此值为空，则使用类的名称 */
+  /**
+   * 服务提供者的别名，若此值为空，则使用类的名称
+   *
+   * @return 方法的别名
+   */
   String alias() default "";
 }

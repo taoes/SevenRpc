@@ -3,8 +3,13 @@ package com.zhoutao123.rpc.component.aop;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
+import com.zhoutao123.rpc.base.annotation.EnabledRpcConsumer;
 import com.zhoutao123.rpc.base.annotation.RpcConsumer;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -15,16 +20,31 @@ import org.springframework.core.type.AnnotationMetadata;
 
 @Configuration
 public class RpcConsumerRegister implements ImportBeanDefinitionRegistrar {
-  Log log = LogFactory.get();
+
+  private static Log log = LogFactory.get();
 
   @Override
   public void registerBeanDefinitions(
-      AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+      AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
 
-    Set<Class<?>> classes = ClassUtil.scanPackage();
+    Set<String> scanPathList = resolveScanPath(metadata);
+    Set<Class<?>> classes;
+
+    if (scanPathList.size() > 0) {
+      classes =
+          scanPathList.stream()
+              .map(ClassUtil::scanPackage)
+              .flatMap(Set::stream)
+              .collect(Collectors.toSet());
+    } else {
+      classes = ClassUtil.scanPackage();
+    }
+
+    log.trace("扫描到:{} 个类", classes.size());
+
     try {
       for (Class<?> aClass : classes) {
-        if (aClass.getAnnotation(RpcConsumer.class) != null) {
+        if (aClass.isInterface() && aClass.getAnnotation(RpcConsumer.class) != null) {
           BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(aClass);
           GenericBeanDefinition definition = (GenericBeanDefinition) builder.getRawBeanDefinition();
           definition.getPropertyValues().add("interfaceClass", definition.getBeanClassName());
@@ -36,6 +56,17 @@ public class RpcConsumerRegister implements ImportBeanDefinitionRegistrar {
     } catch (Exception e) {
       log.error("注入bean 定义失败", e);
     }
+  }
+
+  /** 从注解信息中获取配置信息 */
+  private Set<String> resolveScanPath(AnnotationMetadata metadata) {
+    Map<String, Object> attributes =
+        metadata.getAnnotationAttributes(EnabledRpcConsumer.class.getName());
+    if (attributes == null) {
+      return new HashSet<>(0);
+    }
+    String[] paths = (String[]) attributes.get("scanPath");
+    return new HashSet<>(Arrays.asList(paths));
   }
 
   /** SpringBean 工厂 */

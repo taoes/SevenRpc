@@ -15,5 +15,5 @@ import org.springframework.context.annotation.Import;
 @Import(RpcConsumerRegister.class)
 public @interface EnabledRpcConsumer {
 
-  String[] values() default {};
+  String[] scanPath() default {};
 }

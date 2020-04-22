@@ -1,3 +1,2 @@
-rootProject.name = 'Rpc'
-include 'Core'
+rootProject.name = 'SevenRpc'
 

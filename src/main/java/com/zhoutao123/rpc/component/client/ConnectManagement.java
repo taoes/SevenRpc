@@ -36,15 +36,10 @@ public class ConnectManagement {
     return management;
   }
 
+  /**
+   * 连接地址
+   *
+   * @param addresses 连接的地址信息
+   */
   public void connectServerNode(List<InetSocketAddress> addresses) {}
-
-  /** 连接到服务器 */
-  private void connectServerNode(final InetSocketAddress address) throws InterruptedException {}
-
-  /** 新增处理器 */
-  public void addHandler(RpcClientHandler handler) {}
-
-  public RpcClientHandler chooseHandler() {
-    return null;
-  }
 }

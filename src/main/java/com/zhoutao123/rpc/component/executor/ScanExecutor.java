@@ -1,10 +1,7 @@
 package com.zhoutao123.rpc.component.executor;
 
-import cn.hutool.log.Log;
-import cn.hutool.log.LogFactory;
 import com.zhoutao123.rpc.base.Executor;
 import com.zhoutao123.rpc.base.RpcServiceContext;
-import com.zhoutao123.rpc.base.annotation.RpcMethod;
 import com.zhoutao123.rpc.base.annotation.RpcService;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -16,8 +13,6 @@ import org.springframework.util.ReflectionUtils;
 /** 注册服务 执行器 */
 @Component("scanExecutor")
 public class ScanExecutor implements Executor {
-
-  private Log log = LogFactory.get();
 
   private ApplicationContext applicationContext;
 
@@ -38,28 +33,27 @@ public class ScanExecutor implements Executor {
 
       Method[] allDeclaredMethods = ReflectionUtils.getAllDeclaredMethods(serviceBean.getClass());
       for (Method method : allDeclaredMethods) {
-        RpcMethod rpcMethod = method.getAnnotation(RpcMethod.class);
-        if (rpcMethod == null) {
+        Method superMethod = findInterfaceMethod(interfaces, method);
+        if (superMethod == null) {
           continue;
         }
-
-        Method superMethod = findInterfaceMethod(interfaces, method);
         rpcServiceContext.saveMethod(serviceBean, superMethod);
       }
     }
   }
 
   private Method findInterfaceMethod(Class<?>[] clazzList, Method method) {
-    try {
-      for (Class<?> aClass : clazzList) {
+    for (Class<?> aClass : clazzList) {
+      try {
         Method method1 = aClass.getMethod(method.getName(), method.getParameterTypes());
         if (method1 != null) {
           return method1;
         }
+      } catch (Exception ignored) {
+
       }
-    } catch (Exception e) {
-      throw new RuntimeException(e);
     }
+
     return null;
   }
 }

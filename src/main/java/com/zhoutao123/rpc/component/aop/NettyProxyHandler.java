@@ -23,7 +23,7 @@ import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-/** 定义的动态代理对象 */
+/** 生成消费者的代理对象 */
 public class NettyProxyHandler implements InvocationHandler {
 
   private Log log = LogFactory.get();

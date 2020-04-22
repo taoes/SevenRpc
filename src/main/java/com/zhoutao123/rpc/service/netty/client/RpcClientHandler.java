@@ -30,7 +30,7 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<RpcResponse> {
 
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, RpcResponse msg) throws Exception {
-    log.info("接收到数据:{}", msg);
+    log.trace("接收到数据:{}", msg);
     this.response = msg;
     latch.countDown();
   }
