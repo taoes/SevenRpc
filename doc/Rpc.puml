@@ -1,40 +1,53 @@
+
 @startuml
-autonumber
-
 ==  服务启动过程 ==
+entity 服务提供者 AS P
+entity 服务消费者 AS C
+collections 注册中心 AS R
 
-P_A -> P_A: 在指定端口启动 Netty 服务
-note right: 读取配置文件信息获取启动端口
 
-P_A -> 注册中心 : 向 注册中心 注册服务 AServiceImpl
-note right: 服务名称为:
+activate P
+P -> P: 启动SpringBoot应用,启动完成后自动调用 RpcLaunch
+P -> P: 执行继承了InitFunction的实例方法
+P -> P: 扫描添加 @RpcService 服务 并记录其公有方法到当前上下文
+P -> P: 从Spring 容器中获取注册中心的实现
+P -[#blue]> R: 向 注册中心 注册服务
+deactivate P
+
+activate R
+
+R -[#blue]-> P: 从注册服务中获取的连接，创建 Netty连接管理器
+deactivate R
+P -> P: 启动 Netty 服务，监听消费者请求，执行相应的方法
+
+
 
 ==  等待消费者发送 RPC 请求 ==
 
+C-> C: 扫描消费者的标记了 @RpcConsumer 的接口
+C -> C: 向Spring容器中注入这些接口的代理对象，代理对象实现Netty 请求
+C -> R : 获取服务中心的服务提供信息
+R --> C : 返回注册中心注册的服务，以及IP和Port
+C -> C: 获取当前服务的连接信息
 
-C_B -> C_B: 查询本地缓存中服务A的信息
-
-alt 本地没有服务A的地址信息
-C_B -> 注册中心: 获取指定服务提供者的地址
-note left: 服务不存在则抛出异常
-end
-
-
-
-C_B -> C_B: 序列化请求数据
-C_B -[#0000FF]> P_A: 根据注册中心返回的地址和端口调用指定方法
-P_A -> P_A: 实现反序列化请求数据
-P_A --[#0000FF]--> C_B: 返回相应数据
-C_B -> C_B: 反序列化相应数据
+== 消费者调用服务 ==
 
 
+C -[#red]> C: 发起 Netty  请求
+activate C
+C -[#red]> C: 请求对象序列化
 
+C -[#black]-> P: 发送请求
 
+activate P
+P->P: 对象反序列化
+P->P: 解析RPCRequest，找到对应的方法，不存在则返回404
+P -[#0088FF]-> C: 执行相应的请求
+deactivate P
 
+C -[#red]-> C: 判断请求是否成功,继续执行其他逻辑
 
-
-
-
+deactivate C
 
 
 @enduml
