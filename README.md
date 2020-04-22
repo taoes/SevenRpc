@@ -190,8 +190,12 @@ public class Result {
 
 ```json
 {
-    "result": 8,
-    "time": 247
+    "result": {
+        "和": 8,
+        "差": -2,
+        "积": 15
+    },
+    "time": 7
 }
 ```
 
