@@ -87,7 +87,7 @@ publishing {
                 // 区别于artifactId，可以理解为artifactName
                 name = 'SevenRpc'
                 // 构件描述
-                description = 'SevenRpc-Core'
+                description = 'SevenRpcCore'
                 // 构件主页
                 url = 'https://github.com/tao/sevenRpc'
 
@@ -106,9 +106,9 @@ publishing {
                     }
                 }
                 scm {
-                    url = 'https://github.com/tao/sevenRpc'
-                    connection = 'scm:git:git://github.com/tao/sevenRpc.git'
-                    developerConnection = 'scm:git:ssh://git@github.com:tao/sevenRpc.git'
+                    url = 'https://github.com/tao/SevenRpc'
+                    connection = 'scm:git:git://github.com/tao/SevenRpc.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:tao/SevenRpc.git'
                 }
             }
         }
@@ -118,7 +118,8 @@ publishing {
         maven {
             def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
             def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            url = snapshotsRepoUrl
+//                    version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             credentials {
                 username sonatypeUsername
                 password sonatypePassword

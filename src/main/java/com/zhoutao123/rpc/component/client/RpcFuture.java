@@ -7,6 +7,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 
+/** 这是默认的配置信息 */
 public class RpcFuture implements Future<Object> {
 
   private Sync sync;

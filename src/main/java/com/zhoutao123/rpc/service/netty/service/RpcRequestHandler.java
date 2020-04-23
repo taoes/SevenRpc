@@ -11,7 +11,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import java.lang.reflect.Method;
 
 /**
- * RPC 请求处理Handler
+ * 服务端处理RPC请求
  *
  * @author Seven zhoutao825638@vip.qq.com
  * @since 0.0.1
@@ -28,7 +28,7 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<RpcRequest> {
 
   @Override
   protected void channelRead0(ChannelHandlerContext context, RpcRequest request) {
-    log.info("接收到数据:{}", request);
+    log.trace("接收到数据:{}", request);
 
     String requestId = request.getRequestId();
 
@@ -66,7 +66,7 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<RpcRequest> {
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
     ctx.close();
-    log.info("发生异常:{}", cause);
+    log.warn("发生异常:{}", cause);
   }
 
   /** 写入错误信息 */

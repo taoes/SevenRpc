@@ -63,7 +63,8 @@ public class NettyProxyHandler implements InvocationHandler {
 
     clientHandler.send(request);
 
-    boolean await = latch.await(5, TimeUnit.SECONDS);
+    // 等待请求完成
+    boolean await = latch.await(10, TimeUnit.SECONDS);
     if (!await) {
       throw new RpcTimeoutException("请求 rpc 方法超时");
     }

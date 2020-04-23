@@ -6,12 +6,11 @@ import com.zhoutao123.rpc.service.netty.coder.RpcEncoder;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import java.util.concurrent.CountDownLatch;
 
 public class RpcClientInitializer extends ChannelInitializer<SocketChannel> {
 
-  CountDownLatch latch;
+  final CountDownLatch latch;
 
   public RpcClientInitializer(CountDownLatch latch) {
     this.latch = latch;
@@ -20,7 +19,7 @@ public class RpcClientInitializer extends ChannelInitializer<SocketChannel> {
   @Override
   protected void initChannel(SocketChannel ch) throws Exception {
     ChannelPipeline pipeline = ch.pipeline();
-    pipeline.addLast(new RpcDecoder(RpcResponse.class));
+    pipeline.addLast(new RpcDecoder<>(RpcResponse.class));
     pipeline.addLast(new RpcEncoder());
     pipeline.addLast(new RpcClientHandler(latch));
   }

@@ -13,10 +13,10 @@ public class RpcEncoder extends MessageToByteEncoder<Object> {
 
   @Override
   public void encode(ChannelHandlerContext ctx, Object in, ByteBuf out) throws Exception {
-    log.info("执行编码");
+    log.trace("执行编码");
     byte[] data = SerializationUtil.serialize(in);
     out.writeInt(data.length);
     out.writeBytes(data);
-    log.info("执行编码完成");
+    log.trace("执行编码完成");
   }
 }

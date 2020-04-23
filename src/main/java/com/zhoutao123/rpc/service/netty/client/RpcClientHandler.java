@@ -11,7 +11,7 @@ import java.util.concurrent.CountDownLatch;
 
 public class RpcClientHandler extends SimpleChannelInboundHandler<RpcResponse> {
 
-  CountDownLatch latch;
+  final CountDownLatch latch;
 
   private Log log = LogFactory.get();
 
@@ -44,7 +44,16 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<RpcResponse> {
     latch.countDown();
   }
 
+  /**
+   * 发送RPC请求，如果请求对象为NULL，返回空数据
+   *
+   * @param request 请求对象实例
+   */
   public void send(RpcRequest request) {
+    if (request == null) {
+      latch.countDown();
+      return;
+    }
     channel.writeAndFlush(request);
   }
 }

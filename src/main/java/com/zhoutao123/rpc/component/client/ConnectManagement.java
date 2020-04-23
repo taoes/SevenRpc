@@ -3,31 +3,32 @@ package com.zhoutao123.rpc.component.client;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.zhoutao123.rpc.service.netty.client.RpcClientHandler;
+import com.zhoutao123.rpc.service.netty.client.RpcClientInitializer;
+import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Netty 连接管理器
+ *
+ * @since 0.0.01
+ */
 public class ConnectManagement {
 
   private static final Log log = LogFactory.get();
 
-  // handler处理器
-  private List<RpcClientHandler> rpcClientHandler = new ArrayList<>();
-
   // 地址信息
   private Map<InetSocketAddress, RpcClientHandler> handlerMap = new ConcurrentHashMap<>();
 
-  // 轮询计数器
-  private AtomicInteger roundRobin = new AtomicInteger(0);
-
   private static volatile ConnectManagement management;
 
-  private EventLoopGroup eventLoopGroup = new NioEventLoopGroup(4);
+  private EventLoopGroup group =
+      new NioEventLoopGroup(Runtime.getRuntime().availableProcessors() * 2);
 
   public static ConnectManagement getInstance() {
     if (management == null) {
@@ -39,7 +40,16 @@ public class ConnectManagement {
   /**
    * 连接地址
    *
-   * @param addresses 连接的地址信息
+   * @param address 连接的地址信息
    */
-  public void connectServerNode(List<InetSocketAddress> addresses) {}
+  public void connectServerNode(List<InetSocketAddress> address) throws InterruptedException {
+    Bootstrap b = new Bootstrap();
+    RpcClientInitializer rpcClientInitializer = new RpcClientInitializer(null);
+
+    b.group(group)
+        .channel(NioSocketChannel.class)
+        .handler(rpcClientInitializer)
+        .connect(new InetSocketAddress("127.0.0.1", 8888))
+        .sync();
+  }
 }
