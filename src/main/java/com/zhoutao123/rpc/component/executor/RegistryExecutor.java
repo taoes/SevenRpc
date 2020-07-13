@@ -7,17 +7,19 @@ import com.zhoutao123.rpc.base.RpcServiceContext;
 import com.zhoutao123.rpc.base.registry.RpcRegistry;
 import com.zhoutao123.rpc.entity.MethodInfo;
 import java.util.Map;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /** 注册服务 执行器 */
+@Order(3)
 @Component("registryExecutor")
 public class RegistryExecutor implements Executor {
 
-  private Log log = LogFactory.get();
+  private final Log log = LogFactory.get();
 
-  private RpcRegistry rpcRegistry;
+  private final RpcRegistry rpcRegistry;
 
-  private RpcServiceContext rpcServiceContext;
+  private final RpcServiceContext rpcServiceContext;
 
   public RegistryExecutor(RpcRegistry rpcRegistry, RpcServiceContext rpcServiceContext) {
     this.rpcRegistry = rpcRegistry;
@@ -27,7 +29,7 @@ public class RegistryExecutor implements Executor {
   /** 向注册中心注册服务 */
   public void start() {
     Map<String, MethodInfo> methodPool = rpcServiceContext.getMethodPool();
-    log.info("发现注册服务:{} 个", methodPool.size());
+    log.info("Find Rpc service count:{} ", methodPool.size());
     rpcRegistry.register(methodPool.keySet());
   }
 }

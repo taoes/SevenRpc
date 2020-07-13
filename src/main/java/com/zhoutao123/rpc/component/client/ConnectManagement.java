@@ -9,7 +9,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import java.net.InetSocketAddress;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -42,14 +41,15 @@ public class ConnectManagement {
    *
    * @param address 连接的地址信息
    */
-  public void connectServerNode(List<InetSocketAddress> address) throws InterruptedException {
+  public void connectServerNode(InetSocketAddress address) throws InterruptedException {
     Bootstrap b = new Bootstrap();
     RpcClientInitializer rpcClientInitializer = new RpcClientInitializer(null);
 
     b.group(group)
         .channel(NioSocketChannel.class)
         .handler(rpcClientInitializer)
-        .connect(new InetSocketAddress("127.0.0.1", 8888))
+        .connect(address)
         .sync();
+    log.info("连接成功:{}", address);
   }
 }

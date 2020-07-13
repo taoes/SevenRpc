@@ -19,12 +19,13 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /** InitFunction 执行器 */
+@Order(1)
 @Component("initExecutor")
 public class InitExecutor implements Executor {
 
-  private Log log = LogFactory.get();
+  private final Log log = LogFactory.get();
 
-  private RpcConfig rpcConfig;
+  private final RpcConfig rpcConfig;
 
   public InitExecutor(RpcConfig rpcConfig) {
     this.rpcConfig = rpcConfig;

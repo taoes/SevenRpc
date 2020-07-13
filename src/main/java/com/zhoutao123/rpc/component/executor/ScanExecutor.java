@@ -7,10 +7,12 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
 /** 注册服务 执行器 */
+@Order(2)
 @Component("scanExecutor")
 public class ScanExecutor implements Executor {
 

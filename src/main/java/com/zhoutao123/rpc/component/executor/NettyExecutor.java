@@ -12,17 +12,19 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /** InitFunction 执行器 */
+@Order(4)
 @Component("nettyExecutor")
 public class NettyExecutor implements Executor {
 
-  private RpcConfig rpcConfig;
+  private final RpcConfig rpcConfig;
 
-  private static Log log = LogFactory.get();
+  private static final Log log = LogFactory.get();
 
-  private RpcServiceContext rpcServiceContext;
+  private final RpcServiceContext rpcServiceContext;
 
   public NettyExecutor(RpcConfig rpcConfig, RpcServiceContext rpcServiceContext) {
     this.rpcConfig = rpcConfig;
@@ -41,10 +43,10 @@ public class NettyExecutor implements Executor {
           .channel(NioServerSocketChannel.class)
           .childHandler(new RpcServiceInitializer(rpcServiceContext));
       ChannelFuture future = serverBootstrap.bind(rpcConfig.getPort()).sync();
-      log.info("Netty服务启动在:{} 端口", rpcConfig.getPort());
-      future.channel().closeFuture().sync();
+      log.info("ServiceRpc started on port(s): {} (TCP)", rpcConfig.getPort());
+      //future.channel().closeFuture().sync();
     } catch (Exception e) {
-      log.info("初始化Netty服务发生异常.", e);
+      log.error("Init ServiceRpc happen exception:", e);
       System.exit(500);
     } finally {
       boss.shutdownGracefully();
