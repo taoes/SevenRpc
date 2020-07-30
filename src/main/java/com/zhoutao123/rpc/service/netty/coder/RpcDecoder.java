@@ -10,9 +10,9 @@ import java.util.List;
 
 public class RpcDecoder<T> extends ByteToMessageDecoder {
 
-  private Log log = LogFactory.get();
+  private final Log log = LogFactory.get();
 
-  private Class<? extends T> aClass;
+  private final Class<? extends T> aClass;
 
   public RpcDecoder(Class<? extends T> aClass) {
     if (aClass == null) {

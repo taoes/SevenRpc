@@ -44,7 +44,7 @@ public class NettyExecutor implements Executor {
           .childHandler(new RpcServiceInitializer(rpcServiceContext));
       ChannelFuture future = serverBootstrap.bind(rpcConfig.getPort()).sync();
       log.info("ServiceRpc started on port(s): {} (TCP)", rpcConfig.getPort());
-      //future.channel().closeFuture().sync();
+      future.channel().closeFuture().sync();
     } catch (Exception e) {
       log.error("Init ServiceRpc happen exception:", e);
       System.exit(500);

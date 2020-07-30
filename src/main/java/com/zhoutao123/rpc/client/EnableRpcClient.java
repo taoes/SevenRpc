@@ -1,4 +1,4 @@
-package com.zhoutao123.rpc.service;
+package com.zhoutao123.rpc.client;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -10,5 +10,8 @@ import org.springframework.context.annotation.Import;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import(RpcServiceSelector.class)
-public @interface EnableRpcService {}
+@Import(RpcClientSelector.class)
+public @interface EnableRpcClient {
+
+  String path() default "123";
+}

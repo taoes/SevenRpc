@@ -1,9 +1,7 @@
 package com.zhoutao123.rpc.test;
 
-import com.zhoutao123.rpc.base.annotation.RpcConsumer;
 import java.util.Map;
 
-@RpcConsumer
 public interface TestService {
 
   Integer sum(Integer a, Integer b);

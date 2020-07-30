@@ -33,9 +33,7 @@ public class ZKRegister implements RpcRegistry {
   }
 
   @Override
-  public void sendHeard() {
-    zkClient.getChildren("/");
-  }
+  public void sendHeard() {}
 
   @Override
   public boolean register(Set<String> serviceNames) {

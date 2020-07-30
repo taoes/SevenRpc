@@ -13,7 +13,7 @@ import org.springframework.context.annotation.ImportSelector;
 import org.springframework.core.type.AnnotationMetadata;
 
 @Configuration
-public class RpcServiceConfiguration implements ImportSelector {
+public class RpcServiceSelector implements ImportSelector {
 
   public String[] selectImports(AnnotationMetadata importingClassMetadata) {
 
@@ -21,12 +21,16 @@ public class RpcServiceConfiguration implements ImportSelector {
       RpcService.class.getName(),
       RpcServiceContextImpl.class.getName(),
       ZKRegister.class.getName(),
+
+      // 配置信息
       RpcConfig.class.getName(),
+
+      // 执行器
       ClientExecutor.class.getName(),
       InitExecutor.class.getName(),
       NettyExecutor.class.getName(),
       RegistryExecutor.class.getName(),
-      ScanExecutor.class.getName(),
+      ScanExecutor.class.getName()
     };
   }
 }

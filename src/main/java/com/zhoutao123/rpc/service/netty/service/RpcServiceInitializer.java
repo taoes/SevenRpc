@@ -16,7 +16,7 @@ import io.netty.channel.socket.SocketChannel;
  */
 public class RpcServiceInitializer extends ChannelInitializer<SocketChannel> {
 
-  private RpcServiceContext rpcServiceContext;
+  private final RpcServiceContext rpcServiceContext;
 
   public RpcServiceInitializer(RpcServiceContext rpcServiceContext) {
     this.rpcServiceContext = rpcServiceContext;

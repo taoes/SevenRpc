@@ -21,7 +21,7 @@ import org.springframework.core.type.AnnotationMetadata;
 @Configuration
 public class RpcConsumerRegister implements ImportBeanDefinitionRegistrar {
 
-  private static Log log = LogFactory.get();
+  private final Log log = LogFactory.get();
 
   @Override
   public void registerBeanDefinitions(
@@ -40,8 +40,6 @@ public class RpcConsumerRegister implements ImportBeanDefinitionRegistrar {
       classes = ClassUtil.scanPackage();
     }
 
-    log.trace("扫描到:{} 个类", classes.size());
-
     try {
       for (Class<?> aClass : classes) {
         if (aClass.isInterface() && aClass.getAnnotation(RpcConsumer.class) != null) {
@@ -54,7 +52,7 @@ public class RpcConsumerRegister implements ImportBeanDefinitionRegistrar {
         }
       }
     } catch (Exception e) {
-      log.error("注入bean 定义失败", e);
+      log.error("Autowired RpcBean definition fail", e);
     }
   }
 

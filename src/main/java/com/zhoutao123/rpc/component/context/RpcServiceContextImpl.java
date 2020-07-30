@@ -2,6 +2,7 @@ package com.zhoutao123.rpc.component.context;
 
 import com.zhoutao123.rpc.base.RpcServiceContext;
 import com.zhoutao123.rpc.entity.MethodInfo;
+import com.zhoutao123.rpc.utils.HashUtils;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class RpcServiceContextImpl implements RpcServiceContext {
       methodPool = new HashMap<>(10);
     }
 
-    String name = method.toGenericString();
+    String name = HashUtils.md5(method.toGenericString());
 
     // 构建方法信息
     MethodInfo methodInfo = new MethodInfo(method, instance);

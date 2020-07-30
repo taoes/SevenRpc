@@ -3,34 +3,29 @@ package com.zhoutao123.rpc.service;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.zhoutao123.rpc.base.Executor;
-import com.zhoutao123.rpc.base.annotation.EnabledRpcConsumer;
 import com.zhoutao123.rpc.component.executor.ClientExecutor;
-import com.zhoutao123.rpc.component.executor.InitExecutor;
-import com.zhoutao123.rpc.component.executor.NettyExecutor;
-import com.zhoutao123.rpc.component.executor.RegistryExecutor;
-import com.zhoutao123.rpc.component.executor.ScanExecutor;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.annotation.Order;
 
 public class RpcService implements ApplicationRunner, ApplicationContextAware {
 
   private static final Log log = LogFactory.get();
 
+  // Spring应用上下文
   private ApplicationContext context;
 
   @Override
   public void run(ApplicationArguments args) throws Exception {
     Map<String, Executor> beansOfType = this.context.getBeansOfType(Executor.class);
+
+    // 对执行器排序
     List<Executor> collect =
         beansOfType.values().stream()
             .sorted(

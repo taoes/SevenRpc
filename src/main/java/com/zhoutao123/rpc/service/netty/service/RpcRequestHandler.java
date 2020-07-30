@@ -18,9 +18,9 @@ import java.lang.reflect.Method;
  */
 public class RpcRequestHandler extends SimpleChannelInboundHandler<RpcRequest> {
 
-  private Log log = LogFactory.get();
+  private final Log log = LogFactory.get();
 
-  private RpcServiceContext rpcServiceContext;
+  private final RpcServiceContext rpcServiceContext;
 
   public RpcRequestHandler(RpcServiceContext rpcServiceContext) {
     this.rpcServiceContext = rpcServiceContext;
@@ -62,7 +62,7 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<RpcRequest> {
     }
   }
 
-  // 发生异常时候关闭连接
+  /** 发生异常时候关闭连接 */
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
     ctx.close();

@@ -2,6 +2,8 @@ package com.zhoutao123.rpc.base.config;
 
 import java.util.HashSet;
 import java.util.Set;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,7 +16,7 @@ public class RpcConfig {
 
   private int port = 7077;
 
-  private int timeout = 5;
+  private final int timeout = 5;
 
   private ZkConfig zk = new ZkConfig();
 
