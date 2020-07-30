@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 @Configuration
 public class RpcClientSelector implements ImportBeanDefinitionRegistrar {
@@ -31,7 +32,13 @@ public class RpcClientSelector implements ImportBeanDefinitionRegistrar {
     if (CollectionUtils.isEmpty(attributes)) {
       return;
     }
-    String path = (String) attributes.get("path");
+    String path = (String) attributes.get("scanPath");
+
+    if (!StringUtils.hasText(path)) {
+      log.warn("rpc scan path not set!");
+      return;
+    }
+
     Set<Class<?>> classes = ClassUtil.scanPackage(path);
     for (Class<?> aClass : classes) {
       Field[] fields = aClass.getDeclaredFields();
@@ -71,4 +78,3 @@ public class RpcClientSelector implements ImportBeanDefinitionRegistrar {
     log.info("注入RpcBean:{}", name);
   }
 }
-

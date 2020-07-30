@@ -6,6 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.annotation.AliasFor;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -13,5 +14,9 @@ import org.springframework.context.annotation.Import;
 @Import(RpcClientSelector.class)
 public @interface EnableRpcClient {
 
-  String path() default "123";
+  @AliasFor("scanPath")
+  String value() default "";
+
+  @AliasFor("value")
+  String scanPath() default "";
 }
