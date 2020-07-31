@@ -4,6 +4,7 @@ import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.zhoutao123.rpc.base.Executor;
 import com.zhoutao123.rpc.component.executor.ClientExecutor;
+import com.zhoutao123.rpc.utils.LogoUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,6 +24,7 @@ public class RpcService implements ApplicationRunner, ApplicationContextAware {
 
   @Override
   public void run(ApplicationArguments args) throws Exception {
+    long startTime = System.currentTimeMillis();
     Map<String, Executor> beansOfType = this.context.getBeansOfType(Executor.class);
 
     // 对执行器排序
@@ -39,8 +41,7 @@ public class RpcService implements ApplicationRunner, ApplicationContextAware {
                 })
             .filter(executor -> !(executor instanceof ClientExecutor))
             .collect(Collectors.toList());
-
-    long startTime = System.currentTimeMillis();
+    LogoUtils.printLogo();
     for (Executor executor : collect) {
       executor.start();
     }
