@@ -16,4 +16,15 @@ public class SocketAddressWrapper extends InetSocketAddress {
     }
     return new SocketAddressWrapper(nodeInfo.getIp(), nodeInfo.getPort());
   }
+
+  public static SocketAddressWrapper getInstance(InetSocketAddress address) {
+    if (address == null) {
+      throw new RpcParamException("获取服务端信息异常，无法注册服务");
+    }
+    return new SocketAddressWrapper(address.getHostName(), address.getPort());
+  }
+
+  public String getAddressId() {
+    return this.getHostName() + ":" + this.getPort();
+  }
 }

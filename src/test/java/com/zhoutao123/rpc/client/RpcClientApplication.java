@@ -25,10 +25,13 @@ public class RpcClientApplication {
 
   @GetMapping("/test")
   public Map<String, Serializable> name(String name) {
+    long startTime = System.currentTimeMillis();
     String name2 = clientService.getName(name);
     Map<String, Integer> sum = clientService.sum(3, 4);
     Map<String, Serializable> stringObjectMap = new HashMap<>(sum);
     stringObjectMap.put("大写", name2);
+    Long absentTime = System.currentTimeMillis() - startTime;
+    stringObjectMap.put("耗时", absentTime);
     return stringObjectMap;
   }
 }

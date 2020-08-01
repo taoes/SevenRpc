@@ -1,34 +1,31 @@
 package com.zhoutao123.rpc.component.client;
 
-import cn.hutool.log.Log;
-import cn.hutool.log.LogFactory;
 import com.zhoutao123.rpc.service.netty.client.RpcClientHandler;
 import com.zhoutao123.rpc.service.netty.client.RpcClientInitializer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import java.net.InetSocketAddress;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Netty 连接管理器
  *
  * @since 0.0.01
  */
+@Slf4j
 public class ConnectManagement {
-
-  private static final Log log = LogFactory.get();
-
-  // 地址信息
-  private Map<InetSocketAddress, RpcClientHandler> handlerMap = new ConcurrentHashMap<>();
 
   private static volatile ConnectManagement management;
 
-  private EventLoopGroup group =
+  private final EventLoopGroup group =
       new NioEventLoopGroup(Runtime.getRuntime().availableProcessors() * 2);
 
+  private static final ConcurrentHashMap<String, RpcClientHandler> handlerMap =
+      new ConcurrentHashMap<>();
+
+  /** 获取连接实例 */
   public static ConnectManagement getInstance() {
     if (management == null) {
       management = new ConnectManagement();
@@ -41,15 +38,19 @@ public class ConnectManagement {
    *
    * @param address 连接的地址信息
    */
-  public void connectServerNode(InetSocketAddress address) throws InterruptedException {
-    Bootstrap b = new Bootstrap();
-    RpcClientInitializer rpcClientInitializer = new RpcClientInitializer(null);
+  public RpcClientHandler connectServerNode(SocketAddressWrapper address)
+      throws InterruptedException {
+    String addressId = address.getAddressId();
+    RpcClientHandler handler = handlerMap.getOrDefault(addressId, new RpcClientHandler());
 
+    Bootstrap b = new Bootstrap();
+    RpcClientInitializer rpcClientInitializer = new RpcClientInitializer(handler);
     b.group(group)
         .channel(NioSocketChannel.class)
         .handler(rpcClientInitializer)
         .connect(address)
         .sync();
-    log.info("连接成功:{}", address);
+    handlerMap.put(addressId, handler);
+    return rpcClientInitializer.getHandler();
   }
 }

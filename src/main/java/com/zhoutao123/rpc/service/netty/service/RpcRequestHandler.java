@@ -3,6 +3,7 @@ package com.zhoutao123.rpc.service.netty.service;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.zhoutao123.rpc.base.RpcServiceContext;
+import com.zhoutao123.rpc.client.Beat;
 import com.zhoutao123.rpc.entity.MethodInfo;
 import com.zhoutao123.rpc.entity.RpcRequest;
 import com.zhoutao123.rpc.entity.RpcResponse;
@@ -31,6 +32,11 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<RpcRequest> {
     log.trace("接收到数据:{}", request);
 
     String requestId = request.getRequestId();
+
+    if (Beat.BEAT_ID.equals(requestId)) {
+      log.info("接收到心跳包...");
+      return;
+    }
 
     RpcResponse rpcResponse = new RpcResponse();
     rpcResponse.setRequestId(requestId);

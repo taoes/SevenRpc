@@ -6,6 +6,7 @@ import com.zhoutao123.rpc.base.Executor;
 import com.zhoutao123.rpc.base.config.RpcConfig;
 import com.zhoutao123.rpc.base.registry.RpcRegistry;
 import com.zhoutao123.rpc.component.client.ConnectManagement;
+import com.zhoutao123.rpc.component.client.SocketAddressWrapper;
 import com.zhoutao123.rpc.entity.NodeInfo;
 import com.zhoutao123.rpc.utils.NetUtils;
 import java.net.InetSocketAddress;
@@ -53,7 +54,7 @@ public class ClientExecutor implements Executor {
     ConnectManagement instance = ConnectManagement.getInstance();
     try {
       for (InetSocketAddress address : addresses) {
-        instance.connectServerNode(address);
+        instance.connectServerNode(SocketAddressWrapper.getInstance(address));
       }
     } catch (Throwable e) {
       throw new RuntimeException(e);
