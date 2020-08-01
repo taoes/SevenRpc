@@ -1,13 +1,12 @@
 package com.zhoutao123.rpc.service;
 
-import cn.hutool.log.Log;
-import cn.hutool.log.LogFactory;
 import com.zhoutao123.rpc.base.Executor;
 import com.zhoutao123.rpc.component.executor.ClientExecutor;
 import com.zhoutao123.rpc.utils.LogoUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -15,9 +14,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.Order;
 
+@Slf4j
 public class RpcService implements ApplicationRunner, ApplicationContextAware {
-
-  private static final Log log = LogFactory.get();
 
   // Spring应用上下文
   private ApplicationContext context;

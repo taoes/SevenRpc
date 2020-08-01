@@ -1,15 +1,13 @@
 package com.zhoutao123.rpc.service.netty.coder;
 
-import cn.hutool.log.Log;
-import cn.hutool.log.LogFactory;
 import com.zhoutao123.rpc.utils.SerializationUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class RpcEncoder extends MessageToByteEncoder<Object> {
-
-  private Log log = LogFactory.get();
 
   @Override
   public void encode(ChannelHandlerContext ctx, Object in, ByteBuf out) throws Exception {

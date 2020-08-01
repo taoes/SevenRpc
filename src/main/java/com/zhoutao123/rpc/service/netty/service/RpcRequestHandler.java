@@ -29,12 +29,9 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<RpcRequest> {
 
   @Override
   protected void channelRead0(ChannelHandlerContext context, RpcRequest request) {
-    log.trace("接收到数据:{}", request);
-
     String requestId = request.getRequestId();
 
     if (Beat.BEAT_ID.equals(requestId)) {
-      log.info("接收到心跳包...");
       return;
     }
 

@@ -22,13 +22,19 @@ public class NettyProxyHandler implements InvocationHandler {
 
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+    // 判断此方法是否是Object的默认方法，值得话直接执行并返回
     boolean contains = ClassUtils.allMethodNameOfClass(Object.class).contains(method.getName());
     if (contains) {
       return method.invoke(method, args);
     }
 
+    // 生成请求对象
     RpcRequest request = generator(method, args);
+    // 获取处理器
     RpcClientHandler handled = getHandled();
+
+    // 发送请求 & 返回请求的Future对象
     RpcFuture future = handled.sendRequest(request);
     return future.get();
   }
