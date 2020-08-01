@@ -5,15 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/** 标记此字段为RPC消费者 */
-@Target(ElementType.TYPE)
+/** 用于声明服务使用Seven RPC 注入 */
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface RpcConsumer {
-
-  /**
-   * 服务提供者的别名，若此值为空，则使用类的名称
-   *
-   * @return 方法的别名
-   */
-  String alias() default "";
-}
+public @interface RpcConsumer {}

@@ -1,0 +1,10 @@
+application:
+  seven-rpc:
+    port: 8889
+    name: ServiceProvide
+    zk:
+      host: localhost
+      port: 2181
+
+server:
+  port: 7778

@@ -40,7 +40,6 @@ dependencies {
 
     // 注册中心实现方案
     implementation group: 'com.101tec', name: 'zkclient', version: '0.11'
-    implementation 'org.projectlombok:lombok:1.18.12'
 
 
     compile "io.protostuff:protostuff-core:${protostuffVersion}"
@@ -53,89 +52,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter:2.2.6.RELEASE'
 
 
+    compileOnly "org.projectlombok:lombok:1.16.18"
+    annotationProcessor "org.projectlombok:lombok:1.16.18"
+    testCompileOnly "org.projectlombok:lombok:1.16.18"
+
+    testCompile 'org.springframework.boot:spring-boot-starter-web:2.2.6.RELEASE'
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
-
-// 发布脚本
-
-
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
-    classifier = 'sources'
-}
-
-task javadocJar(type: Jar) {
-    from javadoc
-    classifier = 'javadoc'
-}
-
-
-publishing {
-    // 定义发布什么
-    publications {
-        mavenJava(MavenPublication) {
-            groupId = project.group
-            artifactId = project.name
-            version = project.version
-
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
-            pom {
-                // 构件名称
-                // 区别于artifactId，可以理解为artifactName
-                name = 'SevenRpc'
-                // 构件描述
-                description = 'SevenRpcCore'
-                // 构件主页
-                url = 'https://github.com/tao/sevenRpc'
-
-                // 许可证名称和地址
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-                // 开发者信息
-                developers {
-                    developer {
-                        name = 'zhoutao'
-                        email = 'zhoutao825638@vip.qq.com'
-                    }
-                }
-                scm {
-                    url = 'https://github.com/tao/SevenRpc'
-                    connection = 'scm:git:git://github.com/tao/SevenRpc.git'
-                    developerConnection = 'scm:git:ssh://git@github.com:tao/SevenRpc.git'
-                }
-            }
-        }
-    }
-    // 定义发布到哪里
-    repositories {
-        maven {
-            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
-            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
-            url = snapshotsRepoUrl
-//                    version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-            credentials {
-                username sonatypeUsername
-                password sonatypePassword
-            }
-        }
-    }
-}
-
-signing {
-    sign configurations.archives
-    sign publishing.publications.mavenJava
-}
-
-
-javadoc {
-    options.addStringOption("charset", "UTF-8")
-}
 
 

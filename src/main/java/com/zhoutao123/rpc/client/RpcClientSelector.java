@@ -3,6 +3,8 @@ package com.zhoutao123.rpc.client;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
+import com.zhoutao123.rpc.base.annotation.EnableRpcClient;
+import com.zhoutao123.rpc.base.annotation.RpcConsumer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.HashSet;
@@ -32,8 +34,9 @@ public class RpcClientSelector implements ImportBeanDefinitionRegistrar {
     if (CollectionUtils.isEmpty(attributes)) {
       return;
     }
-    String path = (String) attributes.get("scanPath");
 
+    // 获取属性注解中的ScanPath 属性, 用户扫描路径中带有@RpcConsumer 的服务
+    String path = (String) attributes.get("scanPath");
     if (!StringUtils.hasText(path)) {
       log.warn("rpc scan path not set!");
       return;
@@ -41,8 +44,10 @@ public class RpcClientSelector implements ImportBeanDefinitionRegistrar {
 
     Set<Class<?>> classes = ClassUtil.scanPackage(path);
     for (Class<?> aClass : classes) {
+      // 获取目标类的私有属性
       Field[] fields = aClass.getDeclaredFields();
       for (Field field : fields) {
+        // 判断目标字段是否含有 RpcConsumer 注解，如果有的话，则向IOC容器中注入
         Annotation[] annotations = field.getAnnotations();
         for (Annotation annotation : annotations) {
           Class<? extends Annotation> annotationType = annotation.annotationType();
@@ -56,25 +61,24 @@ public class RpcClientSelector implements ImportBeanDefinitionRegistrar {
   }
 
   private void registryRpcServiceBean(BeanDefinitionRegistry registry, Class<?> clazz) {
-    boolean add = classes.add(clazz);
-    if (!add) {
+    boolean addComplete = classes.add(clazz);
+    if (!addComplete) {
       return;
     }
-    String name = clazz.getName();
-    boolean containsBeanDefinition = registry.containsBeanDefinition(name);
+    String beanName = clazz.getName();
+    // 如果此Bean已经在IOC容器中注入，那么不在进行二次注入
+    boolean containsBeanDefinition = registry.containsBeanDefinition(beanName);
     if (containsBeanDefinition) {
       return;
     }
 
     // 获取代理BeanClass
-
     BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(clazz);
+
     GenericBeanDefinition definition = (GenericBeanDefinition) builder.getRawBeanDefinition();
     definition.getPropertyValues().add("interfaceClass", definition.getBeanClassName());
-    definition.setBeanClass(MyProxyFactory.class);
+    definition.setBeanClass(RpcServiceBeanProxyFactory.class);
     definition.setAutowireMode(GenericBeanDefinition.AUTOWIRE_BY_TYPE);
     registry.registerBeanDefinition(clazz.getName(), definition);
-
-    log.info("注入RpcBean:{}", name);
   }
 }

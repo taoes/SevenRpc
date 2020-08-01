@@ -1,4 +1,4 @@
-package com.zhoutao123.rpc.component.aop;
+package com.zhoutao123.rpc.client;
 
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
@@ -26,6 +26,7 @@ public class NettyProxyHandler implements InvocationHandler {
 
   private final Log log = LogFactory.get();
 
+  // 请求客户端的时间循环组
   private static final EventLoopGroup group = new NioEventLoopGroup(4);
 
   public Object bind(Class<?> cls) {

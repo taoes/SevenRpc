@@ -1,11 +1,8 @@
 package com.zhoutao123.rpc.base.config;
 
-import lombok.Data;
-
 /**
  * SevenRPC 服务配置信息
  */
-@Data
 public class ZkConfig {
 
   private String host = "127.0.0.1";

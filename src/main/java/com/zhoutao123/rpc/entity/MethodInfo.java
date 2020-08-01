@@ -1,10 +1,8 @@
 package com.zhoutao123.rpc.entity;
 
 import java.lang.reflect.Method;
-import lombok.Data;
 
 /** 方法信息实体 */
-@Data
 public class MethodInfo {
 
   private final Method method;

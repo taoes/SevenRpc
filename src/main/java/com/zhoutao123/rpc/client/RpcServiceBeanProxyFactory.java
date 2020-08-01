@@ -1,9 +1,11 @@
 package com.zhoutao123.rpc.client;
 
-import com.zhoutao123.rpc.component.aop.NettyProxyHandler;
+import lombok.Data;
 import org.springframework.beans.factory.FactoryBean;
 
-public class MyProxyFactory<T> implements FactoryBean<T> {
+/** RPC 服务Bean生成代理对象 */
+@Data
+public class RpcServiceBeanProxyFactory<T> implements FactoryBean<T> {
 
   private Class<T> interfaceClass;
 
@@ -21,13 +23,5 @@ public class MyProxyFactory<T> implements FactoryBean<T> {
   @Override
   public boolean isSingleton() {
     return true;
-  }
-
-  public Class<T> getInterfaceClass() {
-    return interfaceClass;
-  }
-
-  public void setInterfaceClass(Class<T> interfaceClass) {
-    this.interfaceClass = interfaceClass;
   }
 }
