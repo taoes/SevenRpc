@@ -1,10 +1,10 @@
-package com.zhoutao123.rpc.component.executor;
+package com.zhoutao123.rpc.component.executor.service;
 
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.zhoutao123.rpc.base.Executor;
-import com.zhoutao123.rpc.base.RpcServiceContext;
 import com.zhoutao123.rpc.base.config.RpcConfig;
+import com.zhoutao123.rpc.component.context.RpcServiceContext;
 import com.zhoutao123.rpc.service.netty.service.RpcServiceInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -12,24 +12,20 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /** InitFunction 执行器 */
 @Order(4)
-@Component("nettyExecutor")
-public class NettyExecutor implements Executor {
-
-  private final RpcConfig rpcConfig;
+@Component("serviceNettyExecutor")
+public class ServiceNettyExecutor implements Executor {
 
   private static final Log log = LogFactory.get();
 
-  private final RpcServiceContext rpcServiceContext;
+  @Autowired private RpcConfig rpcConfig;
 
-  public NettyExecutor(RpcConfig rpcConfig, RpcServiceContext rpcServiceContext) {
-    this.rpcConfig = rpcConfig;
-    this.rpcServiceContext = rpcServiceContext;
-  }
+  @Autowired private RpcServiceContext rpcServiceContext;
 
   /** 启动Netty服务 */
   public void start() {
@@ -43,7 +39,7 @@ public class NettyExecutor implements Executor {
           .channel(NioServerSocketChannel.class)
           .childHandler(new RpcServiceInitializer(rpcServiceContext));
       ChannelFuture future = serverBootstrap.bind(rpcConfig.getPort()).sync();
-      log.info("ServiceRpc started on port(s): {} (TCP)", rpcConfig.getPort());
+      log.info("RpcService started on port(s): {} (TCP)", rpcConfig.getPort());
       future.channel().closeFuture().sync();
     } catch (Exception e) {
       log.error("Init ServiceRpc happen exception:", e);

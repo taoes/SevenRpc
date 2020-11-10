@@ -1,4 +1,4 @@
-package com.zhoutao123.rpc.component.register;
+package com.zhoutao123.rpc.component.service;
 
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
@@ -14,56 +14,56 @@ import java.util.Map;
 import java.util.Set;
 import org.I0Itec.zkclient.ZkClient;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
+/** 服务注册器 */
 @Component
-public class ZKRegister implements RpcRegistry {
+public class ServiceRegister implements RpcRegistry {
 
-  private static final String PREFIX = "/seven-rpc";
+  private static final String PREFIX = "/SEVEN_RPC";
 
   private final Log log = LogFactory.get();
 
-  private final RpcConfig rpcConfig;
+  private final NodeInfo localNode;
 
   private final ZkClient zkClient;
 
-  public ZKRegister(RpcConfig rpcConfig) {
-    this.rpcConfig = rpcConfig;
+  public ServiceRegister(RpcConfig rpcConfig) {
     ZkConfig configZk = rpcConfig.getZk();
     zkClient = new ZkClient(configZk.getHost(), configZk.getPort());
+    if (!zkClient.exists(PREFIX)) {
+      zkClient.createPersistent(PREFIX);
+    }
+    String localIP = NetUtils.getIntranetIp();
+    localNode = new NodeInfo(localIP, rpcConfig.getPort());
   }
 
   @Override
   public void sendHeard() {}
 
   @Override
-  public boolean register(Set<String> serviceNames) {
-    String intranetIp = NetUtils.getIntranetIp();
-    NodeInfo nodeInfo = new NodeInfo(intranetIp, rpcConfig.getPort());
-    if (!zkClient.exists(PREFIX)) {
-      zkClient.createEphemeral(PREFIX);
-    }
+  public void register(Set<String> serviceNames) {
 
     for (String serviceName : serviceNames) {
       String path = PREFIX + "/" + serviceName;
       boolean exists = zkClient.exists(path);
       List<NodeInfo> nodeInfos;
+
       if (exists) {
         nodeInfos = zkClient.readData(path);
-        nodeInfos.add(nodeInfo);
+        nodeInfos.add(localNode);
         zkClient.delete(path);
       } else {
-        nodeInfos = new ArrayList<>(1);
-        nodeInfos.add(nodeInfo);
+        nodeInfos = new ArrayList<>();
+        nodeInfos.add(localNode);
       }
       zkClient.createEphemeral(path, nodeInfos);
       log.debug("Registry service: {}", path);
     }
-    return true;
   }
 
   @Override
   public Map<String, List<NodeInfo>> getServiceNames() {
-
     List<String> children = zkClient.getChildren(PREFIX);
     Map<String, List<NodeInfo>> infoMap = new HashMap<>(children.size());
     for (String node : children) {
@@ -74,8 +74,20 @@ public class ZKRegister implements RpcRegistry {
   }
 
   @Override
-  public boolean unregister(Set<String> serviceNames) {
+  public void unregister(Set<String> serviceNames) {
+    if (CollectionUtils.isEmpty(serviceNames)) {
+      return;
+    }
+    for (String serviceName : serviceNames) {
+      String path = PREFIX + "/" + serviceName;
+      boolean exist = zkClient.exists(path);
+      if (!exist) {
+        continue;
+      }
+      List<NodeInfo> nodeList = zkClient.readData(path);
+      nodeList.remove(localNode);
+    }
+
     log.info("取消注册服务完成:{}", serviceNames);
-    return true;
   }
 }

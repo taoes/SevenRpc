@@ -1,7 +1,5 @@
-package com.zhoutao123.rpc.component.executor;
+package com.zhoutao123.rpc.component.executor.client;
 
-import cn.hutool.log.Log;
-import cn.hutool.log.LogFactory;
 import com.zhoutao123.rpc.base.Executor;
 import com.zhoutao123.rpc.base.config.RpcConfig;
 import com.zhoutao123.rpc.base.registry.RpcRegistry;
@@ -16,24 +14,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-/** 注册服务 执行器 */
+/** 注册节点服务 */
+@Order
 @Component("clientExecutor")
 public class ClientExecutor implements Executor {
 
-  private final Log log = LogFactory.get();
+  @Autowired private RpcRegistry rpcRegistry;
 
-  private final RpcRegistry rpcRegistry;
-
-  private final RpcConfig rpcConfig;
-
-  public ClientExecutor(RpcRegistry rpcRegistry, RpcConfig rpcConfig) {
-    this.rpcRegistry = rpcRegistry;
-    this.rpcConfig = rpcConfig;
-  }
+  @Autowired private RpcConfig rpcConfig;
 
   /** 从注册中心获取连接信息 */
+  @Override
   public void start() {
     Map<String, List<NodeInfo>> serviceNames = rpcRegistry.getServiceNames();
     HashSet<List<NodeInfo>> nodeInfos = new HashSet<>(serviceNames.values());

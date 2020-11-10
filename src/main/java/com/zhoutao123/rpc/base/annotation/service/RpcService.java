@@ -1,4 +1,4 @@
-package com.zhoutao123.rpc.base.annotation;
+package com.zhoutao123.rpc.base.annotation.service;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -13,4 +13,11 @@ import org.springframework.stereotype.Service;
 public @interface RpcService {
 
   String[] excludeMethodName() default {};
+
+  /**
+   * 注册 RPC服务类中所有的方法
+   *
+   * @apiNote 不包含 {@link Object} 类中的方法
+   */
+  boolean all() default false;
 }

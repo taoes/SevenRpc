@@ -4,7 +4,6 @@ import java.security.MessageDigest;
 
 public class HashUtils {
 
-  /** @return hex string with upper case */
   public static String md5(String source) {
     String des = "";
     try {

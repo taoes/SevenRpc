@@ -12,7 +12,7 @@ public class RpcFuture implements Future<Object> {
 
   private Sync sync;
 
-  private long startTime;
+  private final long startTime = System.currentTimeMillis();
 
   private RpcRequest request;
 
@@ -21,7 +21,6 @@ public class RpcFuture implements Future<Object> {
   public RpcFuture(RpcRequest request) {
     this.sync = new Sync();
     this.request = request;
-    this.startTime = System.currentTimeMillis();
   }
 
   public void done(RpcResponse response) {

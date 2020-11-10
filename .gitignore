@@ -32,3 +32,5 @@ out/
 .vscode/
 
 gradle.properties
+
+.DS_Store

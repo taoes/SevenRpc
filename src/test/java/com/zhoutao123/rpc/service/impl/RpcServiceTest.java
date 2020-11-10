@@ -1,6 +1,6 @@
 package com.zhoutao123.rpc.service.impl;
 
-import com.zhoutao123.rpc.base.annotation.RpcService;
+import com.zhoutao123.rpc.base.annotation.service.RpcService;
 import com.zhoutao123.rpc.test.TestService;
 import java.util.HashMap;
 import java.util.Map;

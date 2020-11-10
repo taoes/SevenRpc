@@ -11,26 +11,12 @@ public interface RpcRegistry {
   /** 发送心跳 */
   void sendHeard();
 
-  /**
-   * 批量注册服务
-   *
-   * @param serviceNames 服务的名称
-   * @return 是否注册成功
-   */
-  boolean register(Set<String> serviceNames);
+  /** 批量注册服务 */
+  void register(Set<String> serviceNames);
 
-  /**
-   * 获取节点的服务列表
-   *
-   * @return 提供的方法信息
-   */
+  /** 获取节点的服务列表 */
   Map<String, List<NodeInfo>> getServiceNames();
 
-  /**
-   * 取消注册服务
-   *
-   * @param serviceNames 注销的方法名称
-   * @return 是否注销成功
-   */
-  boolean unregister(Set<String> serviceNames);
+  /** 取消注册服务 */
+  void unregister(Set<String> serviceNames);
 }

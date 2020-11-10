@@ -12,11 +12,7 @@ public class NetUtils {
 
   private NetUtils() {}
 
-  /**
-   * 获取内网IP地址
-   *
-   * @return 局域网IP地址 eg: 192.168.1.101
-   */
+  /** 获取内网IP地址 */
   public static String getIntranetIp() {
     try {
       return InetAddress.getLocalHost().getHostAddress();

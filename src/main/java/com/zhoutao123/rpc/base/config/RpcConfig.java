@@ -1,8 +1,5 @@
 package com.zhoutao123.rpc.base.config;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -20,8 +17,4 @@ public class RpcConfig {
   private final int timeout = 5;
 
   private ZkConfig zk = new ZkConfig();
-
-  public Set<String> getCustomPackage() {
-    return new HashSet<>(0);
-  }
 }

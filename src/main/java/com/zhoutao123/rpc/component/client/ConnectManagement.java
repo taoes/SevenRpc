@@ -9,11 +9,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Netty 连接管理器
- *
- * @since 0.0.01
- */
+/** Netty 连接管理器 */
 @Slf4j
 public class ConnectManagement {
 
@@ -33,11 +29,7 @@ public class ConnectManagement {
     return management;
   }
 
-  /**
-   * 连接地址
-   *
-   * @param address 连接的地址信息
-   */
+  /** 连接地址 */
   public RpcClientHandler connectServerNode(SocketAddressWrapper address)
       throws InterruptedException {
     String addressId = address.getAddressId();

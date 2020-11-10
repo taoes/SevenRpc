@@ -3,6 +3,7 @@ package com.zhoutao123.rpc.service.netty.coder;
 import com.zhoutao123.rpc.utils.SerializationUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelId;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,8 @@ public class RpcDecoder<T> extends ByteToMessageDecoder {
 
   @Override
   public final void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
-    log.trace("执行解码:{}", in);
+    ChannelId channelId = ctx.channel().id();
+    log.debug("执行解码开始, channelId = {}", channelId);
     // 如果不够一个整数，那么继续等待
     if (in.readableBytes() < 4) {
       return;
@@ -39,6 +41,6 @@ public class RpcDecoder<T> extends ByteToMessageDecoder {
     // 反序列化
     T obj = SerializationUtil.deserialize(data, aClass);
     out.add(obj);
-    log.trace("解码完成:{}", obj);
+    log.debug("执行解码结束, res = {} channelId = {}", obj, channelId);
   }
 }

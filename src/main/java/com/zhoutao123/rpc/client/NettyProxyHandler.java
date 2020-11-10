@@ -2,8 +2,6 @@ package com.zhoutao123.rpc.client;
 
 import com.zhoutao123.rpc.component.client.ConnectManagement;
 import com.zhoutao123.rpc.component.client.RpcFuture;
-import com.zhoutao123.rpc.component.client.SocketAddressWrapper;
-import com.zhoutao123.rpc.entity.NodeInfo;
 import com.zhoutao123.rpc.entity.RpcRequest;
 import com.zhoutao123.rpc.service.netty.client.RpcClientHandler;
 import com.zhoutao123.rpc.utils.ClassUtils;
@@ -51,8 +49,7 @@ public class NettyProxyHandler implements InvocationHandler {
   }
 
   private RpcClientHandler getHandled() throws InterruptedException {
-    NodeInfo nodeInfo = new NodeInfo("127.0.0.1", 8889);
-    return ConnectManagement.getInstance()
-        .connectServerNode(SocketAddressWrapper.getInstance(nodeInfo));
+    // 负载均衡算法
+    return ConnectManagement.getInstance().connectServerNode(null);
   }
 }
