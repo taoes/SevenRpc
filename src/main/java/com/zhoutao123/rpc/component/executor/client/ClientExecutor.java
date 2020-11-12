@@ -9,10 +9,10 @@ import com.zhoutao123.rpc.entity.NodeInfo;
 import com.zhoutao123.rpc.utils.NetUtils;
 import java.net.InetSocketAddress;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
@@ -30,8 +30,8 @@ public class ClientExecutor implements Executor {
   /** 从注册中心获取连接信息 */
   @Override
   public void start() {
-    Map<String, List<NodeInfo>> serviceNames = rpcRegistry.getServiceNames();
-    HashSet<List<NodeInfo>> nodeInfos = new HashSet<>(serviceNames.values());
+    Map<String, Set<NodeInfo>> serviceNames = rpcRegistry.getServiceNames();
+    Collection<Set<NodeInfo>> nodeInfos = serviceNames.values();
 
     // 构建本机断点
     Integer port = rpcConfig.getPort();

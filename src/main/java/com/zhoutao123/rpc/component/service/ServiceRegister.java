@@ -7,8 +7,8 @@ import com.zhoutao123.rpc.base.config.ZkConfig;
 import com.zhoutao123.rpc.base.registry.RpcRegistry;
 import com.zhoutao123.rpc.entity.NodeInfo;
 import com.zhoutao123.rpc.utils.NetUtils;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,14 +47,14 @@ public class ServiceRegister implements RpcRegistry {
     for (String serviceName : serviceNames) {
       String path = PREFIX + "/" + serviceName;
       boolean exists = zkClient.exists(path);
-      List<NodeInfo> nodeInfos;
+      Set<NodeInfo> nodeInfos;
 
       if (exists) {
         nodeInfos = zkClient.readData(path);
         nodeInfos.add(localNode);
         zkClient.delete(path);
       } else {
-        nodeInfos = new ArrayList<>();
+        nodeInfos = new HashSet<>();
         nodeInfos.add(localNode);
       }
       zkClient.createEphemeral(path, nodeInfos);
@@ -63,11 +63,11 @@ public class ServiceRegister implements RpcRegistry {
   }
 
   @Override
-  public Map<String, List<NodeInfo>> getServiceNames() {
+  public Map<String, Set<NodeInfo>> getServiceNames() {
     List<String> children = zkClient.getChildren(PREFIX);
-    Map<String, List<NodeInfo>> infoMap = new HashMap<>(children.size());
+    Map<String, Set<NodeInfo>> infoMap = new HashMap<>(children.size());
     for (String node : children) {
-      List<NodeInfo> nodeInfo = zkClient.readData(PREFIX + "/" + node, true);
+      Set<NodeInfo> nodeInfo = zkClient.readData(PREFIX + "/" + node, true);
       infoMap.put(node, nodeInfo);
     }
     return infoMap;

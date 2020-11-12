@@ -38,7 +38,7 @@ public class RpcClientSelector implements ImportBeanDefinitionRegistrar {
     // 获取属性注解中的ScanPath 属性, 用户扫描路径中带有@RpcConsumer 的服务
     String path = (String) attributes.get("scanPath");
     if (!StringUtils.hasText(path)) {
-      log.warn("rpc scan path not set!");
+      log.warn("RPC SCAN PATH NOT SETTING!!!");
       return;
     }
 

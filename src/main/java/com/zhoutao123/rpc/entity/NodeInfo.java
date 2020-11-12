@@ -19,7 +19,10 @@ public class NodeInfo implements Serializable {
   }
 
   public String getIp() {
-    return ip;
+    if (this.ip == null) {
+      return null;
+    }
+    return ip.toUpperCase();
   }
 
   public Integer getPort() {

@@ -1,7 +1,6 @@
 package com.zhoutao123.rpc.base.registry;
 
 import com.zhoutao123.rpc.entity.NodeInfo;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,7 +14,7 @@ public interface RpcRegistry {
   void register(Set<String> serviceNames);
 
   /** 获取节点的服务列表 */
-  Map<String, List<NodeInfo>> getServiceNames();
+  Map<String, Set<NodeInfo>> getServiceNames();
 
   /** 取消注册服务 */
   void unregister(Set<String> serviceNames);
