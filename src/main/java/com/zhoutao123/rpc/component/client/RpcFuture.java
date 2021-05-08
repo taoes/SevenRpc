@@ -1,6 +1,5 @@
 package com.zhoutao123.rpc.component.client;
 
-import com.zhoutao123.rpc.entity.RpcRequest;
 import com.zhoutao123.rpc.entity.RpcResponse;
 import java.util.Optional;
 import java.util.concurrent.Future;
@@ -10,17 +9,14 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 /** 这是默认的配置信息 */
 public class RpcFuture implements Future<Object> {
 
-  private Sync sync;
+  private final Sync sync;
 
   private final long startTime = System.currentTimeMillis();
 
-  private RpcRequest request;
-
   private RpcResponse response;
 
-  public RpcFuture(RpcRequest request) {
+  public RpcFuture() {
     this.sync = new Sync();
-    this.request = request;
   }
 
   public void done(RpcResponse response) {

@@ -1,6 +1,7 @@
 package com.zhoutao123.rpc.base.annotation;
 
 import com.zhoutao123.rpc.client.RpcClientSelector;
+import com.zhoutao123.rpc.client.RpcClientSelectorByName;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -13,7 +14,7 @@ import org.springframework.core.annotation.AliasFor;
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import(RpcClientSelector.class)
+@Import({RpcClientSelector.class, RpcClientSelectorByName.class})
 public @interface EnableRpcClient {
 
   @AliasFor("scanPath")

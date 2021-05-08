@@ -6,7 +6,6 @@ import com.zhoutao123.rpc.component.executor.InitExecutor;
 import com.zhoutao123.rpc.component.executor.service.ServiceNettyExecutor;
 import com.zhoutao123.rpc.component.executor.service.ServiceRegistryExecutor;
 import com.zhoutao123.rpc.component.executor.service.ServiceScanExecutor;
-import com.zhoutao123.rpc.component.service.ServiceRegister;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportSelector;
 import org.springframework.core.type.AnnotationMetadata;
@@ -28,7 +27,7 @@ public class RpcServiceSelector implements ImportSelector {
       RpcServiceContext.class.getName(),
 
       // ZK 客户端
-      ServiceRegister.class.getName(),
+      RpcServiceRegister.class.getName(),
 
       // 注入相关执行器
       InitExecutor.class.getName(),

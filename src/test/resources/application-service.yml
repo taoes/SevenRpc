@@ -3,7 +3,7 @@ spring:
     port: 8889
     name: ServiceProvide
     zk:
-      host: localhost
+      host: localhost:2181
       port: 2181
 
 server:

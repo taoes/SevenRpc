@@ -24,7 +24,7 @@ public class SocketAddressWrapper extends InetSocketAddress {
     return new SocketAddressWrapper(address.getHostName(), address.getPort());
   }
 
-  public String getAddressId() {
-    return this.getHostName() + ":" + this.getPort();
+  public Integer getAddressId() {
+    return (this.getHostName() + ":" + this.getPort()).hashCode();
   }
 }

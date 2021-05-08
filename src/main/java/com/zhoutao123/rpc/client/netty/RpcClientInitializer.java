@@ -1,4 +1,4 @@
-package com.zhoutao123.rpc.service.netty.client;
+package com.zhoutao123.rpc.client.netty;
 
 import com.zhoutao123.rpc.entity.RpcResponse;
 import com.zhoutao123.rpc.service.netty.coder.RpcDecoder;

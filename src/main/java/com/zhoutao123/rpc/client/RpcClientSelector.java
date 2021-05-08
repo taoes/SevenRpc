@@ -5,6 +5,7 @@ import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.zhoutao123.rpc.base.annotation.EnableRpcClient;
 import com.zhoutao123.rpc.base.annotation.RpcConsumer;
+import com.zhoutao123.rpc.component.executor.client.ClientExecutor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.HashSet;
@@ -24,6 +25,7 @@ public class RpcClientSelector implements ImportBeanDefinitionRegistrar {
 
   public static final Log log = LogFactory.get();
 
+  /** 已经注入的类 */
   private final Set<Class<?>> classes = new HashSet<>();
 
   @Override
@@ -58,8 +60,14 @@ public class RpcClientSelector implements ImportBeanDefinitionRegistrar {
         }
       }
     }
+
+    // 注册其他Bean
+    GenericBeanDefinition helloBean = new GenericBeanDefinition();
+    helloBean.setBeanClass(ClientExecutor.class);
+    registry.registerBeanDefinition(ClientExecutor.class.getName(), helloBean);
   }
 
+  /** 生成 ProxyClass & 注入 ProxyClass 到IOC */
   private void registryRpcServiceBean(BeanDefinitionRegistry registry, Class<?> clazz) {
     boolean addComplete = classes.add(clazz);
     if (!addComplete) {

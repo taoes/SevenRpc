@@ -1,6 +1,5 @@
-package com.zhoutao123.rpc.service.netty.client;
+package com.zhoutao123.rpc.client.netty;
 
-import com.zhoutao123.rpc.client.Beat;
 import com.zhoutao123.rpc.component.client.RpcFuture;
 import com.zhoutao123.rpc.entity.RpcRequest;
 import com.zhoutao123.rpc.entity.RpcResponse;
@@ -9,7 +8,6 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.timeout.IdleStateEvent;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,18 +17,22 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<RpcResponse> {
 
   private volatile Channel channel;
 
+  private volatile ChannelHandlerContext context;
+
   private final ConcurrentHashMap<String, RpcFuture> pendingRPC = new ConcurrentHashMap<>();
 
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
     super.channelActive(ctx);
     this.channel = ctx.channel();
+    this.context = ctx;
   }
 
   @Override
   public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
     super.channelRegistered(ctx);
     this.channel = ctx.channel();
+    this.context = ctx;
   }
 
   @Override
@@ -39,8 +41,8 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<RpcResponse> {
     String requestId = msg.getRequestId();
     RpcFuture rpcFuture = pendingRPC.get(requestId);
     if (rpcFuture != null) {
-      rpcFuture.done(msg);
       pendingRPC.remove(requestId);
+      rpcFuture.done(msg);
     }
   }
 
@@ -48,13 +50,14 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<RpcResponse> {
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
     log.info("RpcClientHandler.exceptionCaught:{}", ctx.channel().id());
     ctx.close();
+    channel.close();
   }
 
   public RpcFuture sendRequest(RpcRequest rpcRequest) throws InterruptedException {
-    RpcFuture future = new RpcFuture(rpcRequest);
+    RpcFuture future = new RpcFuture();
     String requestId = rpcRequest.getRequestId();
+    pendingRPC.putIfAbsent(requestId, future);
 
-    pendingRPC.put(requestId, future);
     ChannelFuture channelFuture = channel.writeAndFlush(rpcRequest).sync();
     if (!channelFuture.isSuccess()) {
       log.error("Send request {} error", requestId);
@@ -63,13 +66,8 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<RpcResponse> {
     return future;
   }
 
-  @Override
-  public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-    if (evt instanceof IdleStateEvent) {
-      sendRequest(Beat.BEAT_PING);
-      log.info("发送心跳完成....");
-    } else {
-      super.userEventTriggered(ctx, evt);
-    }
+  public void closeClient() {
+    channel.close();
+    this.context.close();
   }
 }

@@ -1,4 +1,4 @@
-package com.zhoutao123.rpc.component.service;
+package com.zhoutao123.rpc.service;
 
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
@@ -18,7 +18,7 @@ import org.springframework.util.CollectionUtils;
 
 /** 服务注册器 */
 @Component
-public class ServiceRegister implements RpcRegistry {
+public class RpcServiceRegister implements RpcRegistry {
 
   private static final String PREFIX = "/SEVEN_RPC";
 
@@ -28,9 +28,9 @@ public class ServiceRegister implements RpcRegistry {
 
   private final ZkClient zkClient;
 
-  public ServiceRegister(RpcConfig rpcConfig) {
+  public RpcServiceRegister(RpcConfig rpcConfig) {
     ZkConfig configZk = rpcConfig.getZk();
-    zkClient = new ZkClient(configZk.getHost(), configZk.getPort());
+    zkClient = new ZkClient(configZk.getHost(), 1000,1000);
     if (!zkClient.exists(PREFIX)) {
       zkClient.createPersistent(PREFIX);
     }

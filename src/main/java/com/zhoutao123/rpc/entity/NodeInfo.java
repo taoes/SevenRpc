@@ -1,10 +1,11 @@
 package com.zhoutao123.rpc.entity;
 
 import java.io.Serializable;
-import java.net.InetSocketAddress;
 import java.util.Objects;
+import lombok.Data;
 
 /** 节点信息实体 */
+@Data
 public class NodeInfo implements Serializable {
 
   private static final long serialVersionUID = 2780021548824388469L;
@@ -25,14 +26,6 @@ public class NodeInfo implements Serializable {
     return ip.toUpperCase();
   }
 
-  public Integer getPort() {
-    return port;
-  }
-
-  public InetSocketAddress toAddress() {
-    return new InetSocketAddress(ip, port);
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -49,5 +42,9 @@ public class NodeInfo implements Serializable {
   @Override
   public int hashCode() {
     return Objects.hash(getIp(), getPort());
+  }
+
+  public Integer getAddressId() {
+    return this.hashCode();
   }
 }
